@@ -1,0 +1,15 @@
+/* Example: variables, strings */
+
+a 1 var
+b 2 var
+"Result of a + b =" .
+$a $b + .
+endl!
+
+/* Functions */
+
+endl fn { "\n" . }
+
+/* Includes */
+
+"example.cb" include
