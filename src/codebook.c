@@ -15,7 +15,7 @@ char **split(const char *input, size_t *size)
 {
     if (!input) { *size = 0; return NULL; }
 
-    char *current = "";
+    char current[100] = "";
     char **list = malloc(sizeof(char *)*8);
     size_t cap = 8;
     
@@ -23,13 +23,15 @@ char **split(const char *input, size_t *size)
 
     for (int i = 0; i < len; i++)
     {
-        unsigned char ch = input[i];
-        if (ch == " ")
+        char ch[2];
+        ch[0] = input[i];
+        
+        if (!strcmp(" ", ch))
         {
             if (*size + 1 >= cap) { list = realloc(list, cap * 2); cap *= 2; }
 
             list[*size++] = current;
-            current = "";
+            strcpy(current, "");
             
         } else strcat(current, ch);        
     }
