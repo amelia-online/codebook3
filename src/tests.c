@@ -14,7 +14,7 @@
     printf("...Done.\n");
 #define PASS return 1;
 #define FAIL return 0;
-#define ASSERT(EXPR) if (!EXPR) \
+#define ASSERT(EXPR) if (!(EXPR)) \
         return 0;
 
 void Cleanup(size_t num_ptrs, ...)
@@ -78,7 +78,7 @@ void RegisterTest(Test *tests, TestFnPtr(TestFunc), char *name, ...)
     tests[index++] = NewTest(TestFunc, name);
 }
 
-void Log(const char *data)
+void Log(char *data)
 {
     printf("LOG: %s\n", data);
 }
@@ -112,14 +112,20 @@ TEST (SimpleSplitChar)
 
     ASSERT ((size == 4));
 
+    printf("%s", list[0]);
     ASSERT ((!strcmp("Here", list[0])));
 
+    Log("is\n");
     ASSERT ((!strcmp("is", list[1])));
 
+    Log("four\n");
     ASSERT ((!strcmp("four", list[2])));
 
+    Log("words.\n");
     ASSERT ((!strcmp("words.", list[3])));
 
+    for (int i = 0; i < size; i++)
+        free(list[i]);
     free(list);
     
     PASS

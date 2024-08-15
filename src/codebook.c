@@ -5,15 +5,16 @@
 #include <string.h>
 #include <stdio.h>
 
-Token *lex(const char *input, size_t size)
+Token *lex(const char *input, size_t *size)
 {
     return NULL;
 }
 
-// mallocs list.
+// mallocs list and list items, splits by spaces.
 char **split(const char *input, size_t *size)
 {
-    if (!input) { *size = 0; return NULL; }
+    *size = 0;
+    if (!input) return NULL;
 
     char current[100] = "";
     char **list = malloc(sizeof(char *)*8);
@@ -24,16 +25,27 @@ char **split(const char *input, size_t *size)
     for (int i = 0; i < len; i++)
     {
         char ch[2];
+        ch[1] = '\0';
         ch[0] = input[i];
         
         if (!strcmp(" ", ch))
         {
-            if (*size + 1 >= cap) { list = realloc(list, cap * 2); cap *= 2; }
+            if ((*size) + 1 >= cap) { list = realloc(list, sizeof(char *)*cap * 2); cap *= 2; }
 
-            list[*size++] = current;
+            list[*size] = malloc(sizeof(char)*strlen(current));
+            strncpy(list[*size], current, strlen(current));
+            *size += 1;
             strcpy(current, "");
             
-        } else strcat(current, ch);        
+        } else strcat(current, ch);
+            
+    }
+
+    if (strcmp("", current))
+    {
+        list[*size] = malloc(sizeof(char)*strlen(current));
+        strncpy(list[*size], current, strlen(current));
+        *size += 1;
     }
 
     for (size_t i = *size; i < cap; i++)

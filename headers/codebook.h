@@ -4,7 +4,7 @@
 #include "token.h"
 #include <stddef.h>
 
-Token *lex(const char *, size_t);
+Token *lex(const char *, size_t *);
 char **split(const char *, size_t *);
 
 typedef struct
