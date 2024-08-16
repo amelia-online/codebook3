@@ -8,7 +8,7 @@ cb3exe: main.o token.o codebook.o
 tests: tests.o codebook.o
 	$(CC) $(CFLAGS) tests.o codebook.o -o tests
 
-tests.o: src/tests.c
+tests.o: src/tests.c headers/cbtesting.h
 	$(CC) $(CFLAGS) -c src/tests.c
 
 main.o: src/main.c token.o
