@@ -1,3 +1,4 @@
 *.o
 cb3exe
 tests
+.vscode
