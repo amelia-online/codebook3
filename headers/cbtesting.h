@@ -55,7 +55,7 @@ void *RegisterObj(void *ptr)
     {
         disposable_size += 1;
         disposable_cap = 4;
-        disposable = (TObject *)(sizeof(TObject)*4);
+        disposable = (TObject *)malloc(sizeof(TObject)*4);
         disposable[0] = MakeTObject(ptr);
         return ptr;
     }

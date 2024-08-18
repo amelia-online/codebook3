@@ -32,8 +32,8 @@ char **split(const char *input, size_t *size)
         {
             if ((*size) + 1 >= cap) { list = realloc(list, sizeof(char *)*cap * 2); cap *= 2; }
 
-            list[*size] = malloc(sizeof(char)*strlen(current));
-            strncpy(list[*size], current, strlen(current));
+            list[*size] = malloc(sizeof(char)*strlen(current)+1);
+            strncpy(list[*size], current, strlen(current)+1);
             *size += 1;
             strcpy(current, "");
             
@@ -43,8 +43,8 @@ char **split(const char *input, size_t *size)
 
     if (strcmp("", current))
     {
-        list[*size] = malloc(sizeof(char)*strlen(current));
-        strncpy(list[*size], current, strlen(current));
+        list[*size] = malloc(sizeof(char)*strlen(current)+1);
+        strncpy(list[*size], current, strlen(current)+1);
         *size += 1;
     }
 

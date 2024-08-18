@@ -30,16 +30,12 @@ TEST (SimpleSplitChar)
 
     ASSERT ((size == 4));
 
-    printf("%s\n", list[0]);
     ASSERT (!strcmp("Here", list[0]));
 
-    Log("is\n");
     ASSERT (!strcmp("is", list[1]));
 
-    Log("four\n");
     ASSERT (!strcmp("four", list[2]));
 
-    Log("words.\n");
     ASSERT (!strcmp("words.", list[3]));
 
     for (int i = 0; i < size; i++)
@@ -62,28 +58,28 @@ TEST (SimpleNumberStack)
     double val;
 
     if (stack.size != 3)
-        FAIL
+        FAIL;
 
     if (!DS_Pop(&stack, &val))
-        FAIL
+        FAIL;
     if (val != 3.0)
-        FAIL
+        FAIL;
 
     if (!DS_Pop(&stack, &val))
-        FAIL
+        FAIL;
     if (val != 2.0)
-        FAIL
+        FAIL;
 
     if (!DS_Pop(&stack, &val))
-        FAIL
+        FAIL;
     if (val != 1.0)
-        FAIL
+        FAIL;
 
     if (stack.size != 0)
-        FAIL
+        FAIL;
 
     DS_Free(&stack);
-    PASS
+    PASS;
 }
 
 void DisposeDS(DoubleStackCB *ds)
