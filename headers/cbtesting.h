@@ -78,13 +78,11 @@ void DisposeAll()
 
     TObject *temp = disposable;
 
-    while (temp->next)
+    while (temp)
     {
-        TObject *prev = temp;
+        free(temp->ptr);
         temp = temp->next;
-        free(prev);
     }
-    free(temp);
 }
 
 void Cleanup(size_t num_ptrs, ...)
