@@ -4,40 +4,24 @@
 #include "token.h"
 #include <stddef.h>
 
-Token *lex(const char *, size_t *);
+Token *parse(const char *, size_t *);
 char **split(const char *, size_t *);
 
 typedef struct
 {
-    double *array;
+    long *array;
     int top;
     size_t cap;
     size_t size;
-} DoubleStackCB;
+} DataStack;
 
-DoubleStackCB DS_New();
-void DS_Free(DoubleStackCB *);
-void DS_Resize(DoubleStackCB *);
-void DS_Push(DoubleStackCB *, double);
-int DS_Pop(DoubleStackCB *, double *);
-int DS_Peek(DoubleStackCB *, double *);
-void DS_Clear(DoubleStackCB *);
-
-typedef struct
-{
-    char **array;
-    int top;
-    size_t cap;
-    size_t size;
-} StringStackCB;
-
-StringStackCB SS_New();
-void SS_Free(StringStackCB *);
-void SS_Clear(StringStackCB *);
-void SS_Push(StringStackCB *, char *);
-void SS_Resize(StringStackCB *);
-char *SS_Pop(StringStackCB *);
-char *SS_Peek(StringStackCB *);
+DataStack DS_New();
+void DS_Free(DataStack *);
+void DS_Resize(DataStack *);
+void DS_Push(DataStack *, long);
+int DS_Pop(DataStack *, long *);
+int DS_Peek(DataStack *, long *);
+void DS_Clear(DataStack *);
 
 typedef struct
 {
@@ -72,8 +56,7 @@ char **VT_Keys(const VariableTableCB *, size_t *);
 
 typedef struct
 {
-    DoubleStackCB *numberStack;
-    StringStackCB *stringStack;
+    DataStack *numberStack;
     VariableTableCB *variables;
 } EnvironmentCB;
 

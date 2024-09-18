@@ -25,7 +25,6 @@ int main(int argc, char **argv)
     }
 
     char *string = file_to_string(file);
-    printf("%s\n", string);
     
     fclose(file);
 

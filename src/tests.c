@@ -28,7 +28,7 @@ TEST (SimpleSplitChar)
     size_t size;
     char **list = split(sentence, &size);
 
-    ASSERT ((size == 4));
+    ASSERT (size == 4);
 
     ASSERT (!strcmp("Here", list[0]));
 
@@ -42,37 +42,37 @@ TEST (SimpleSplitChar)
         free(list[i]);
     free(list);
 
-    PASS
+    PASS;
 }
 
 // Number Stack
 
 TEST (SimpleNumberStack)
 {
-    DoubleStackCB stack = DS_New();
+    DataStack stack = DS_New();
 
-    DS_Push(&stack, 1.0);
-    DS_Push(&stack, 2.0);
-    DS_Push(&stack, 3.0);
+    DS_Push(&stack, 1);
+    DS_Push(&stack, 2);
+    DS_Push(&stack, 3);
 
-    double val;
+    long val;
 
     if (stack.size != 3)
         FAIL;
 
     if (!DS_Pop(&stack, &val))
         FAIL;
-    if (val != 3.0)
+    if (val != 3)
         FAIL;
 
     if (!DS_Pop(&stack, &val))
         FAIL;
-    if (val != 2.0)
+    if (val != 2)
         FAIL;
 
     if (!DS_Pop(&stack, &val))
         FAIL;
-    if (val != 1.0)
+    if (val != 1)
         FAIL;
 
     if (stack.size != 0)
@@ -82,7 +82,7 @@ TEST (SimpleNumberStack)
     PASS;
 }
 
-void DisposeDS(DoubleStackCB *ds)
+void DisposeDS(DataStack *ds)
 {
     DS_Free(ds);
     free(ds);
@@ -90,122 +90,37 @@ void DisposeDS(DoubleStackCB *ds)
 
 TEST (NumberStackStressTest)
 {
-    DoubleStackCB *stack = malloc(sizeof(DoubleStackCB));
+    DataStack *stack = malloc(sizeof(DataStack));
     *stack = DS_New();
 
     for (int i = 0; i < 1000000; i++)
-        DS_Push(stack, (double)rand());
+        DS_Push(stack, (long)rand());
 
     if (stack->size != 1000000)
     {
         DisposeDS(stack);
-        FAIL
+        FAIL;
     }
 
     for (int i = 0; i < 500000; i++)
     {
-        double val;
+        long val;
         if (!DS_Pop(stack, &val))
         {
             DisposeDS(stack);
-            FAIL
-         }
+            FAIL;
+        }
     }
 
     if (stack->size != 500000)
     {
         DisposeDS(stack);
-        FAIL
+        FAIL;
     }
 
     DS_Free(stack);
     free(stack);
-    PASS
-}
-
-// String Stack
-
-TEST (SimpleStringStack)
-{
-    StringStackCB stack = SS_New();
-
-    SS_Push(&stack, "1");
-    SS_Push(&stack, "2");
-    SS_Push(&stack, "3");
-
-    if (stack.size != 3)
-        return 0;
-
-    if (!SS_Pop(&stack))
-        return 0;
-
-    if (!SS_Pop(&stack))
-        return 0;
-
-    if (!SS_Pop(&stack))
-        return 0;
-
-    if (stack.size != 0)
-        return 0;
-
-    SS_Free(&stack);
-    return 1;
-}
-
-void DisposeSS(StringStackCB *ss)
-{
-    SS_Free(ss);
-    free(ss);
-}
-
-TEST (StringStackStressTest)
-{
-    StringStackCB *stack = malloc(sizeof(StringStackCB));
-    *stack = SS_New();
-    char *checkpoint;
-
-    for (int i = 0; i < 1000000; i++)
-    {
-        double number = (double)rand();
-        int length = snprintf(NULL, 0, "%f", number);
-        char num[length+1];
-        snprintf(num, length+1, "%f", number);
-        SS_Push(stack, num);
-        if (i == 500000)
-            checkpoint=num;
-    }
-
-    if (stack->size != 1000000)
-    {
-        DisposeSS(stack);
-        return 0;
-    }
-
-    for (int i = 0; i < 500000; i++)
-    {
-        char *str = SS_Pop(stack);
-        if (!str)
-            {
-                DisposeSS(stack);
-                return 0;
-            }
-        if (i == 500000)
-            if (strcmp(str, checkpoint))
-                {
-                    DisposeSS(stack);
-                    return 0;
-                }
-    }
-
-    if (stack->size != 500000)
-    {
-        DisposeSS(stack);
-        return 0;
-    }
-
-    SS_Free(stack);
-    free(stack);
-    return 1;
+    PASS;
 }
 
 // Variable Table
@@ -324,7 +239,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 11
+#define TESTCOUNT 9
 
 int main()
 {
@@ -336,8 +251,6 @@ int main()
     RegisterTest(tests, &SimpleNumberStack, "Simple DStack");
     RegisterTest(tests, &SimpleHash2, "Simple Hash 2");
     RegisterTest(tests, &NumberStackStressTest, "DStack Stress Test");
-    RegisterTest(tests, &SimpleStringStack, "Simple SStack");
-    RegisterTest(tests, &StringStackStressTest, "SStack Stress Test");
     RegisterTest(tests, &PutVariableTable, "Variable Table Put");
     RegisterTest(tests, &VariableTableContainsKey, "Variable Table Contains Key");
     RegisterTest(tests, &VariableTableGet, "Variable Table Get");
@@ -349,7 +262,6 @@ int main()
         RunTest(&tests[i], NULL);
         PrintTest(&tests[i]);
     }
-
 
     free(tests);
 

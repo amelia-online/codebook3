@@ -1,15 +1,48 @@
 /* Example: variables, strings */
 
-a 1 var
-b 2 var
-"Result of a + b =" .s
-$a $b + .
-endl!
+var a 1 end
+var a 2 end
+"Result of a + b =" .s // Strings will be malloc'd and the ptr will be on the stack. use `.s` to print.
+$a $b + . // `.` to print item on top of stack.
+endl! // use `!` to call functions.
 
 /* Functions */
 
-~endl { "\n" .s }
+~endl { "\n" .s } // The `~` is used to signify a function defn.
 
 /* Includes */
 
-include example
+include example, std // This expands to include "example.cb" and include "std.cb"
+
+// Allocating memory
+
+var ptr 4 alloc end // allocates 4 bytes on the heap, binds it to ident `ptr`
+
+// if and while
+
+while <cond> {
+    <body>
+}
+
+... if <body> elseif <body> else <body> endif
+
+// ex:
+
+0 while dup 30 < {
+    dup . 1 +
+}
+
+x y = if "True\n" .s else "False\n" .s endif
+
+// chars
+
+'a' .c // prints 'a'
+
+// dereferencing pointers
+
+var 4 alloc num-ptr // some number stored here
+
+// print the number
+$num-ptr 4 @ . // deref: [ptr] [numbytes] - [item]
+
+$num-ptr 4 1424 # // store: [ptr] [numbytes] [item]

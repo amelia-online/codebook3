@@ -17,8 +17,8 @@
     DisposeAll(); \
     if (disposable) free(disposable); \
     printf("...Done.\n");
-#define PASS return 1;
-#define FAIL return 0;
+#define PASS return 1
+#define FAIL return 0
 #define ASSERT(EXPR) if (!(EXPR)) \
         return 0;
 

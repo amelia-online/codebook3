@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 
-Token *lex(const char *input, size_t *size)
+Token *parse(const char *input, size_t *size)
 {
     return NULL;
 }
@@ -54,29 +54,29 @@ char **split(const char *input, size_t *size)
     return list;
 }
 
-DoubleStackCB DS_New()
+DataStack DS_New()
 {
-    return (DoubleStackCB)
+    return (DataStack)
     {
-      .array = malloc(sizeof(double)*64),
+      .array = malloc(sizeof(long)*64),
       .size = 0,
       .cap = 64,
       .top = -1,
     };
 }
 
-void DS_Free(DoubleStackCB *ds)
+void DS_Free(DataStack *ds)
 {
     free(ds->array);
 }
 
-void DS_Resize(DoubleStackCB *ds)
+void DS_Resize(DataStack *ds)
 {
     ds->cap *= 2;
-    ds->array = realloc(ds->array, sizeof(double)*ds->cap);
+    ds->array = realloc(ds->array, sizeof(long)*ds->cap);
 }
 
-void DS_Push(DoubleStackCB *ds, double d)
+void DS_Push(DataStack *ds, long d)
 {
     if (ds->size+1 > ds->cap)
         DS_Resize(ds);
@@ -86,7 +86,7 @@ void DS_Push(DoubleStackCB *ds, double d)
     ds->size++;
 }
 
-int DS_Pop(DoubleStackCB *ds, double *d)
+int DS_Pop(DataStack *ds, long *d)
 {
     if (ds->top == -1)
         return 0;
@@ -97,7 +97,7 @@ int DS_Pop(DoubleStackCB *ds, double *d)
     return 1;
 }
 
-int DS_Peek(DoubleStackCB *ds, double *d)
+int DS_Peek(DataStack *ds, long *d)
 {
     if (ds->top == -1)
         return 0;
@@ -106,67 +106,10 @@ int DS_Peek(DoubleStackCB *ds, double *d)
     return 1;
 }
 
-void DS_Clear(DoubleStackCB *ds)
+void DS_Clear(DataStack *ds)
 {
     DS_Free(ds);
     *ds = DS_New();
-}
-
-StringStackCB SS_New()
-{
-    return (StringStackCB)
-    {
-        .array = malloc(sizeof(char*)*64),
-        .cap = 64,
-        .size = 0,
-        .top = -1,
-    };
-}
-
-void SS_Free(StringStackCB *ss)
-{
-    free(ss->array);
-}
-
-void SS_Clear(StringStackCB *ss)
-{
-    SS_Free(ss);
-    *ss = SS_New();
-}
-
-void SS_Push(StringStackCB *ss, char *item)
-{
-    if (ss->size+1 > ss->cap)
-        SS_Resize(ss);
-
-    ss->top++;
-    ss->array[ss->top] = item;
-    ss->size++;
-}
-
-void SS_Resize(StringStackCB *ss)
-{
-    ss->cap *= 2;
-    ss->array = realloc(ss->array, sizeof(char*)*ss->cap);
-}
-
-char *SS_Pop(StringStackCB *ss)
-{
-    if (ss->top == -1)
-        return NULL;
-
-    char *res = ss->array[ss->top];
-    ss->top--;
-    ss->size--;
-    return res;
-}
-
-char *SS_Peek(StringStackCB *ss)
-{
-    if (ss->top == -1)
-        return NULL;
-
-    return ss->array[ss->top];
 }
 
 // Assume value has previously been malloced.
@@ -344,8 +287,7 @@ EnvironmentCB Env_New()
 {
     return (EnvironmentCB)
     {
-        .numberStack = malloc(sizeof(DoubleStackCB)),
-        .stringStack = malloc(sizeof(StringStackCB)),
+        .numberStack = malloc(sizeof(DataStack)),
         .variables = malloc(sizeof(VariableTableCB)),
     };
 }
@@ -353,6 +295,5 @@ EnvironmentCB Env_New()
 void Env_Free(EnvironmentCB *env)
 {
     free(env->numberStack);
-    free(env->stringStack);
     free( env->variables );
 }

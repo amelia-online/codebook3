@@ -8,7 +8,16 @@ typedef enum
     Ident,
     None,
     Operator,
+    FnDef,
+
 } TokenType;
+
+typedef enum 
+{
+    Str = 0,
+    Int,
+    Ptr,
+} DataType;
 
 typedef union
 {
