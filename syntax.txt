@@ -2,14 +2,14 @@
 
 a 1 var
 b 2 var
-"Result of a + b =" .
+"Result of a + b =" .s
 $a $b + .
 endl!
 
 /* Functions */
 
-endl fn { "\n" . }
+~endl { "\n" .s }
 
 /* Includes */
 
-"example.cb" include
+include example
