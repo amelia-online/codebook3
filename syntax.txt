@@ -16,7 +16,7 @@ include example, std // This expands to include "example.cb" and include "std.cb
 
 // Allocating memory
 
-var ptr 4 alloc end // allocates 4 bytes on the heap, binds it to ident `ptr`
+var ptr 4 % end // allocates 4 bytes on the heap, binds it to ident `ptr`
 
 /* if and while */
 

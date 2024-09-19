@@ -65,29 +65,45 @@ char **split(const char *input, size_t *size)
 
 int IsNumber(char *input, long *num)
 {
-    errno = 0;
-    char *end;
-
-    long res = strtol(input, &end, 16);
-
-    if (errno == ERANGE && res == 0)
-        return res;
-    else
+    if (!strcmp("0", input))
     {
-        *num = res;
+        *num = 0;
         return 1;
     }
 
     errno = 0;
-    res = strtol(input, &end, 10);
+    char *end;
 
-    if (!(errno == ERANGE && res == 0))
+    long res = strtol(input, &end, 10);
+
+    if (!(errno == ERANGE || !res))
     {
         *num = res;
         return 1;
     }
 
     return 0;
+}
+
+int IsHex(char *input, long *num)
+{
+    if (!strcmp("0x0", input))
+    {
+        *num = 0;
+        return 1;
+    }
+
+
+    errno = 0;
+    char *end;
+
+    long res = strtol(input, &end, 16);
+
+    if (errno == ERANGE || !res)
+        return 0;
+    
+    *num = res;
+    return 1;
 }
 
 Value NewValue(DataType type, long val)

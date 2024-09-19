@@ -2,8 +2,8 @@ CFLAGS = -fsanitize=undefined -fsanitize=address -g
 CC = gcc
 OBJS = token.o codebook.o
 
-cb3exe: main.o token.o codebook.o
-	$(CC) $(CFLAGS) main.o $(OBJS) -o cb3exe
+forge: main.o token.o codebook.o
+	$(CC) $(CFLAGS) main.o $(OBJS) -o forge
 
 tests: tests.o codebook.o
 	$(CC) $(CFLAGS) tests.o codebook.o -o tests
@@ -30,4 +30,4 @@ libcbtesting.a: cbtesting.o
 	ar rcs libcbtesting.a cbtesting.o
 
 clean:
-	rm *.o ./cb3exe ./tests
+	rm *.o ./forge ./tests

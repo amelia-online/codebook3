@@ -9,6 +9,7 @@ Token *parse(const char *, size_t *);
 char **split(const char *, size_t *);
 
 int IsNumber(char *, long *);
+int IsHex(char *, long *);
 
 typedef struct 
 {

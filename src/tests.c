@@ -1,11 +1,42 @@
 #include "../headers/codebook.h"
 #include "../headers/cbtesting.h"
+#include <stdbool.h>
 
 /*
     Tests begin here.
 */
 
 // Misc.
+
+TEST (IsNumberSimple)
+{
+    long val;
+    bool is_number = IsNumber("12", &val);
+
+    ASSERT (is_number == true);
+    ASSERT (val == 12);
+
+    is_number = IsNumber("nope", &val);
+
+    ASSERT(is_number == false)
+
+    PASS;
+}
+
+TEST (IsHexSimple)
+{
+    long val;
+    bool is_number = IsHex("0x09", &val);
+
+    ASSERT (is_number == true);
+    ASSERT (val == 9);
+
+    is_number = IsNumber("nope", &val);
+
+    ASSERT(is_number == false)
+
+    PASS;
+}
 
 TEST (SimpleHash)
 {
@@ -239,7 +270,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 9
+#define TESTCOUNT 11
 
 int main()
 {
@@ -256,6 +287,8 @@ int main()
     RegisterTest(tests, &VariableTableGet, "Variable Table Get");
     RegisterTest(tests, &VariableTableKeys, "Variable Table Keys");
     RegisterTest(tests, &SimpleSplitChar, "Simple Split");
+    RegisterTest(tests, &IsNumberSimple, "Simple IsNumber");
+    RegisterTest(tests, &IsHexSimple, "Simple IsHex");
 
     for (int i = 0; i < TESTCOUNT; i++)
     {

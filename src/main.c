@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include "../headers/token.h"
 #include "../headers/codebook.h"
 
@@ -27,11 +28,6 @@ int main(int argc, char **argv)
     char *string = file_to_string(file);
     
     fclose(file);
-
-    long num;
-    int isnum = IsNumber("0x10", &num);
-
-    printf("Number is %ld", num);
 
     free(string);
 }
