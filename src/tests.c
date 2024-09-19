@@ -51,28 +51,28 @@ TEST (SimpleNumberStack)
 {
     DataStack stack = DS_New();
 
-    DS_Push(&stack, 1);
-    DS_Push(&stack, 2);
-    DS_Push(&stack, 3);
+    DS_Push(&stack, 1, Int);
+    DS_Push(&stack, 2, Int);
+    DS_Push(&stack, 3, Int);
 
-    long val;
+    Value val;
 
     if (stack.size != 3)
         FAIL;
 
     if (!DS_Pop(&stack, &val))
         FAIL;
-    if (val != 3)
+    if (val.val != 3)
         FAIL;
 
     if (!DS_Pop(&stack, &val))
         FAIL;
-    if (val != 2)
+    if (val.val != 2)
         FAIL;
 
     if (!DS_Pop(&stack, &val))
         FAIL;
-    if (val != 1)
+    if (val.val != 1)
         FAIL;
 
     if (stack.size != 0)
@@ -94,7 +94,7 @@ TEST (NumberStackStressTest)
     *stack = DS_New();
 
     for (int i = 0; i < 1000000; i++)
-        DS_Push(stack, (long)rand());
+        DS_Push(stack, (long)rand(), Int);
 
     if (stack->size != 1000000)
     {
@@ -104,7 +104,7 @@ TEST (NumberStackStressTest)
 
     for (int i = 0; i < 500000; i++)
     {
-        long val;
+        Value val;
         if (!DS_Pop(stack, &val))
         {
             DisposeDS(stack);

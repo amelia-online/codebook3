@@ -4,9 +4,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 Token *parse(const char *input, size_t *size)
 {
+    if (!strcmp("", input) || !input)
+    {
+        *size = 0;
+        return NULL;
+    }
+
+
+
     return NULL;
 }
 
@@ -54,11 +63,47 @@ char **split(const char *input, size_t *size)
     return list;
 }
 
+int IsNumber(char *input, long *num)
+{
+    errno = 0;
+    char *end;
+
+    long res = strtol(input, &end, 16);
+
+    if (errno == ERANGE && res == 0)
+        return res;
+    else
+    {
+        *num = res;
+        return 1;
+    }
+
+    errno = 0;
+    res = strtol(input, &end, 10);
+
+    if (!(errno == ERANGE && res == 0))
+    {
+        *num = res;
+        return 1;
+    }
+
+    return 0;
+}
+
+Value NewValue(DataType type, long val)
+{
+    return (Value)
+    {
+        .type = type,
+        .val = val
+    };
+}
+
 DataStack DS_New()
 {
     return (DataStack)
     {
-      .array = malloc(sizeof(long)*64),
+      .array = malloc(sizeof(Value)*64),
       .size = 0,
       .cap = 64,
       .top = -1,
@@ -73,20 +118,20 @@ void DS_Free(DataStack *ds)
 void DS_Resize(DataStack *ds)
 {
     ds->cap *= 2;
-    ds->array = realloc(ds->array, sizeof(long)*ds->cap);
+    ds->array = realloc(ds->array, sizeof(Value)*ds->cap);
 }
 
-void DS_Push(DataStack *ds, long d)
+void DS_Push(DataStack *ds, long d, DataType type)
 {
-    if (ds->size+1 > ds->cap)
+    if (ds->size+1 >= ds->cap)
         DS_Resize(ds);
 
     ds->top++;
-    ds->array[ds->top] = d;
+    ds->array[ds->top] = NewValue(type, d);
     ds->size++;
 }
 
-int DS_Pop(DataStack *ds, long *d)
+int DS_Pop(DataStack *ds, Value *d)
 {
     if (ds->top == -1)
         return 0;
@@ -97,7 +142,7 @@ int DS_Pop(DataStack *ds, long *d)
     return 1;
 }
 
-int DS_Peek(DataStack *ds, long *d)
+int DS_Peek(DataStack *ds, Value *d)
 {
     if (ds->top == -1)
         return 0;

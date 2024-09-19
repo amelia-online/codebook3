@@ -18,7 +18,7 @@ include example, std // This expands to include "example.cb" and include "std.cb
 
 var ptr 4 alloc end // allocates 4 bytes on the heap, binds it to ident `ptr`
 
-// if and while
+/* if and while */
 
 while <cond> {
     <body>
@@ -34,15 +34,43 @@ while <cond> {
 
 x y = if "True\n" .s else "False\n" .s endif
 
-// chars
+/* chars */
 
 'a' .c // prints 'a'
 
-// dereferencing pointers
+/* dereferencing pointers */
 
-var 4 alloc num-ptr // some number stored here
+var 4 % num-ptr // some number stored here
 
 // print the number
 $num-ptr 4 @ . // deref: [ptr] [numbytes] - [item]
 
 $num-ptr 4 1424 # // store: [ptr] [numbytes] [item]
+
+/* Casting */
+
+0x0 ->Ptr // cast to pointer
+0xFFFFFF ->Int // cast to Int
+96 ->Char // cast to Char
+
+/* Returning features */
+
+// times loop
+
+do $n times {
+    ....
+}
+
+/*  */
+
+~func {
+    pop a b :
+        ...
+    end // pops and binds top two items off the stack
+}
+
+~func {
+    use a b :
+        ...
+    end // binds but does pop top two items off the stack.
+}

@@ -28,6 +28,11 @@ int main(int argc, char **argv)
     
     fclose(file);
 
+    long num;
+    int isnum = IsNumber("0x10", &num);
+
+    printf("Number is %ld", num);
+
     free(string);
 }
 

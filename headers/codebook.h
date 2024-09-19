@@ -4,12 +4,23 @@
 #include "token.h"
 #include <stddef.h>
 
+void interp(Token *);
 Token *parse(const char *, size_t *);
 char **split(const char *, size_t *);
 
+int IsNumber(char *, long *);
+
+typedef struct 
+{
+    long val;
+    DataType type;
+} Value;
+
+Value NewValue(DataType, long);
+
 typedef struct
 {
-    long *array;
+    Value *array;
     int top;
     size_t cap;
     size_t size;
@@ -18,9 +29,9 @@ typedef struct
 DataStack DS_New();
 void DS_Free(DataStack *);
 void DS_Resize(DataStack *);
-void DS_Push(DataStack *, long);
-int DS_Pop(DataStack *, long *);
-int DS_Peek(DataStack *, long *);
+void DS_Push(DataStack *, long, DataType);
+int DS_Pop(DataStack *, Value *);
+int DS_Peek(DataStack *, Value *);
 void DS_Clear(DataStack *);
 
 typedef struct
