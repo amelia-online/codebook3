@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
 void usage()
 {
-    printf("usage: cb3 <file>\n");
+    printf("usage: ./forge <file>\n");
 }
 
 char *file_to_string(FILE *file)

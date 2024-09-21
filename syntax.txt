@@ -51,7 +51,6 @@ $num-ptr 4 1424 # // store: [ptr] [numbytes] [item]
 
 0x0 ->Ptr // cast to pointer
 0xFFFFFF ->Int // cast to Int
-96 ->Char // cast to Char
 
 /* Returning features */
 

@@ -1,4 +1,6 @@
+*.cb
 *.o
-cb3exe
+forge
 tests
 .vscode
+.DS_Store

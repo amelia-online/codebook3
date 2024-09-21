@@ -20,37 +20,43 @@ typedef enum
 
 typedef enum 
 {
-    Print = 0,
-    PrintS,
-    PrintC,
-    Alloc,
-    Load,
-    Store,
-    Divmod,
-    Mult,
-    Minus,
-    Plus,
-    Not,
-    And,
-    Or,
-    Xor,
-    Shl,
-    Shr,
-    Gt,
-    Lt,
-    Ge,
-    Le,
-    Eq,
-    Ne,
-    Drop,
-    Swap,
-    Rot,
-    Over,
-    Dup,
-    CastInt,
-    CastPtr,
-    CastChar,
-    VarAccess,
+    Print = 0, // .
+    PrintS,    // .s
+    PrintC,    // .c
+    PrintH,    // .h
+    Alloc,     // %
+    Load,      // @
+    Store,     // #
+    AddrOf,    // &
+    Divmod,    // divmod
+    Mult,      // *
+    Minus,     // -
+    Plus,      // +
+    Not,       // not
+    And,       // and
+    Or,        // or
+    Xor,       // xor
+    Shl,       // shl
+    Shr,       // shr
+    Gt,        // >
+    Lt,        // <
+    Ge,        // >=
+    Le,        // <=
+    Eq,        // =
+    Ne,        // !=
+    Drop,      // drop
+    Swap,      // swap
+    Rot,       // rot
+    Over,      // over
+    Dup,       // dup
+    CastInt,   // ->Int
+    CastPtr,   // ->Ptr
+    VarAccess, // ?
+    StringEq,  // s=
+    StringSW,  // ?s
+    StringEW,  // s?
+    StringAdd, // s+
+    StringF,   // s,
 } Intrinsic;
 
 int MatchIntrinisc(char *, Intrinsic *);
@@ -74,12 +80,12 @@ typedef enum
     Str = 0,
     Int,
     Ptr,
-    Chr,
 } DataType;
 
 typedef union
 {
-     // todo
+    long integer;
+    void *pointer;
 } TokenValue;
 
 typedef struct
@@ -89,6 +95,19 @@ typedef struct
     unsigned int line;
     unsigned int pos;
 } Token;
+
+typedef struct
+{
+    char *symbol;
+    Token *body;
+} Expr_VarDefn;
+
+typedef struct
+{
+    char *name;
+    Token *body;
+} Expr_FnDef;
+
 
 Token Token_New(TokenType, TokenValue, unsigned int, unsigned int);
 

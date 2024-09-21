@@ -8,6 +8,20 @@
 
 // Misc.
 
+TEST (StrStartsWithSimple)
+{
+    char *rem = RegisterObj(malloc(7));
+    rem[6] = '\0';
+    char *str = "Hello, world!";
+    bool res = StrStartsWith(str, "Hello, ", &rem);
+
+    ASSERT (res);
+
+    ASSERT (strcmp(rem, "world!"));
+
+    PASS;
+}
+
 TEST (IsNumberSimple)
 {
     long val;
@@ -270,7 +284,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 11
+#define TESTCOUNT 12
 
 int main()
 {
@@ -289,6 +303,7 @@ int main()
     RegisterTest(tests, &SimpleSplitChar, "Simple Split");
     RegisterTest(tests, &IsNumberSimple, "Simple IsNumber");
     RegisterTest(tests, &IsHexSimple, "Simple IsHex");
+    RegisterTest(tests, &StrStartsWithSimple, "Simple StrStartsWith");
 
     for (int i = 0; i < TESTCOUNT; i++)
     {

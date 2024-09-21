@@ -63,9 +63,41 @@ char **split(const char *input, size_t *size)
     return list;
 }
 
+int StrStartsWith(char *str, char *pat, char **rem) // ?s
+{
+    size_t strLen = strlen(str);
+    size_t patLen = strlen(pat);
+
+    if (patLen > strLen)
+        return 0;
+
+    int offset = 0;
+    for (; offset < patLen; offset++)
+        if (str[offset] != pat[offset])
+            return 0;
+
+    strncpy(*rem, (str+offset), strLen-(offset+2));
+    return 1;
+}
+
+int StrEndsWith(char *str, char *pat, char **rem) // s?
+{
+    return 0;
+}
+
+int IsZero(char *input)
+{
+    size_t len = strlen(input);
+
+    for (int i = 0; i < len; i++)
+        if (input[i] != '0')
+            return 0;
+    return 1;
+}
+
 int IsNumber(char *input, long *num)
 {
-    if (!strcmp("0", input))
+    if (IsZero(input))
     {
         *num = 0;
         return 1;

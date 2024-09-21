@@ -8,6 +8,10 @@ void interp(Token *);
 Token *parse(const char *, size_t *);
 char **split(const char *, size_t *);
 
+int StrStartsWith(char *str, char *pat, char **rem);
+int StrEndsWith(char *, char *, char **);
+
+int IsZero(char *);
 int IsNumber(char *, long *);
 int IsHex(char *, long *);
 
@@ -34,6 +38,11 @@ void DS_Push(DataStack *, long, DataType);
 int DS_Pop(DataStack *, Value *);
 int DS_Peek(DataStack *, Value *);
 void DS_Clear(DataStack *);
+int DS_Swap(DataStack *);
+int DS_Dup(DataStack *);
+int DS_Rot(DataStack *);
+int DS_Drop(DataStack *);
+int DS_Over(DataStack *);
 
 typedef struct
 {
