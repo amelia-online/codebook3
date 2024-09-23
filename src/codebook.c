@@ -1,4 +1,5 @@
 #include "../headers/codebook.h"
+#include "../headers/token.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -15,29 +16,72 @@ Token *parse(const char *input, size_t *size)
     }
 
     Token *tokens = (Token *)malloc(sizeof(Token)*8);
+    size_t cap = 8;
     *size = 0;
 
-    size_t linenum = 1;
-    size_t col_pos = 1;
+    size_t linenum = 0;
+    size_t col_pos = 0;
 
     size_t numlines;
     char **lines = splitln(input, &numlines);
 
     for (int i = 0; i < numlines; i++)
     {
+        linenum += 1;
         size_t numTokens;
         char **lineTokens = split(lines[i], &numTokens);
 
         for (int j = 0; j < numTokens; j++)
         {
+            col_pos += 1;
+            char *rem[100];
+            if (StrStartsWith(lineTokens[j], "//", &rem)) break;
+
+            // Yeah I know this looks bad.
             long num;
             if (IsHex(lineTokens[j], &num))
             {
-                printf("Found Int %ld\n", num);
+                TokenValue val;
+                val.integer = num;
+                Token t = Token_New(Int, val, linenum, col_pos++);
+                tokens[*size] = t;
+                *size += 1;
+                continue;
+            } 
+            else if (IsNumber(lineTokens[j], &num))
+            {
+                TokenValue val;
+                val.integer = num;
+                Token t = Token_New(Int, val, linenum, col_pos++);
+                tokens[*size] = t;
+                *size += 1;
+                continue;
             }
+            
+            Intrinsic intr;
+            if (MatchIntrinisc(lineTokens[j], &intr))
+            {
+                //...
+                continue;
+            }
+
+
+
         }
 
+        col_pos = 0;
+
+        for (int idx = 0; idx < numTokens; idx++)
+            free(lineTokens[idx]);
+        free(lineTokens);
+
+        if (*size + 1 >= cap) { cap *= 2; tokens = realloc(tokens, sizeof(Token)*cap); }
+
     }
+
+    for (int i = 0; i < numlines; i++)
+        free(lines[i]);
+    free(lines);
 
     return tokens;
 }

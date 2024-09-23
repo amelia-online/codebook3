@@ -4,12 +4,11 @@
 #include "token.h"
 #include <stddef.h>
 
-void interp(Token *);
+void interp(Token *, size_t);
 Token *parse(const char *, size_t *);
 char **split(const char *, size_t *);
 char **splitln(char *, size_t *);
 char **splitBy(const char *, char *, size_t *);
-
 
 int StrStartsWith(char *str, char *pat, char **rem);
 int StrEndsWith(char *, char *, char **);

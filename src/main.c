@@ -26,8 +26,10 @@ int main(int argc, char **argv)
     }
 
     char *string = file_to_string(file);
-    
     fclose(file);
+
+    size_t len;
+    Token *tokens = parse(string, &len);
 
     free(string);
 }

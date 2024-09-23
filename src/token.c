@@ -11,4 +11,7 @@ Token Token_New(TokenType type, TokenValue value, unsigned int line, unsigned in
     };
 }
 
-
+int MatchIntrinsic(char *input, Intrinsic *out)
+{
+    return 0;
+}
