@@ -8,6 +8,43 @@
 
 // Misc.
 
+TEST (SplitlnSimple)
+{
+    char *str = "Two\nLines";
+    size_t len;
+    char **lines = splitln(str, &len);
+
+    ASSERT (lines);
+
+    ASSERT (len == 2);
+
+    ASSERT (!strcmp(lines[0], "Two"));
+
+    ASSERT (!strcmp(lines[1], "Lines"));
+
+    for (size_t i = 0; i < len; i++)
+        free(lines[i]);
+    free(lines);
+
+    PASS;
+}
+
+TEST (StrEndsWithSimple)
+{
+    char *rem = (malloc(7));
+    rem[6] = '\0';
+    char *str = "Hello, world!";
+    bool res = StrEndsWith(str, " world!", &rem);
+
+    ASSERT (res);
+
+    ASSERT (strcmp(rem, "Hello,"));
+
+    free(rem);
+
+    PASS;
+}
+
 TEST (StrStartsWithSimple)
 {
     char *rem = RegisterObj(malloc(7));
@@ -284,7 +321,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 12
+#define TESTCOUNT 14
 
 int main()
 {
@@ -304,6 +341,8 @@ int main()
     RegisterTest(tests, &IsNumberSimple, "Simple IsNumber");
     RegisterTest(tests, &IsHexSimple, "Simple IsHex");
     RegisterTest(tests, &StrStartsWithSimple, "Simple StrStartsWith");
+    RegisterTest(tests, &StrEndsWithSimple, "Simple StrEndsWith");
+    RegisterTest(tests, &SplitlnSimple, "Simple Splitln");
 
     for (int i = 0; i < TESTCOUNT; i++)
     {

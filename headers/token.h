@@ -12,7 +12,6 @@ typedef enum
     WhileLoop,
     IfStatement,
     TimesLoop,
-    VarDefn,
     ConstDefn,
     Pop,
     Use,
@@ -63,8 +62,7 @@ int MatchIntrinisc(char *, Intrinsic *);
 
 typedef enum 
 {
-    Var = 0,
-    End,
+    End = 0,
     Const,
     While,
     If,
@@ -77,8 +75,7 @@ typedef enum
 
 typedef enum 
 {
-    Str = 0,
-    Int,
+    Int = 0,
     Ptr,
 } DataType;
 

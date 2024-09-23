@@ -14,9 +14,32 @@ Token *parse(const char *input, size_t *size)
         return NULL;
     }
 
+    Token *tokens = (Token *)malloc(sizeof(Token)*8);
+    *size = 0;
 
+    size_t linenum = 1;
+    size_t col_pos = 1;
 
-    return NULL;
+    size_t numlines;
+    char **lines = splitln(input, &numlines);
+
+    for (int i = 0; i < numlines; i++)
+    {
+        size_t numTokens;
+        char **lineTokens = split(lines[i], &numTokens);
+
+        for (int j = 0; j < numTokens; j++)
+        {
+            long num;
+            if (IsHex(lineTokens[j], &num))
+            {
+                printf("Found Int %ld\n", num);
+            }
+        }
+
+    }
+
+    return tokens;
 }
 
 // mallocs list and list items, splits by spaces.
@@ -63,6 +86,92 @@ char **split(const char *input, size_t *size)
     return list;
 }
 
+char **splitln(char *input, size_t *size)
+{
+    *size = 0;
+    if (!input) return NULL;
+
+    char current[100] = "";
+    char **list = malloc(sizeof(char *)*8);
+    size_t cap = 8;
+    
+    size_t len = strlen(input);
+
+    for (int i = 0; i < len; i++)
+    {
+        char ch[2];
+        ch[1] = '\0';
+        ch[0] = input[i];
+        
+        if (!strcmp("\n", ch))
+        {
+            if ((*size) + 1 >= cap) { list = realloc(list, sizeof(char *)*cap * 2); cap *= 2; }
+
+            list[*size] = malloc(sizeof(char)*strlen(current)+1);
+            strncpy(list[*size], current, strlen(current)+1);
+            *size += 1;
+            strcpy(current, "");
+            
+        } else strcat(current, ch);
+            
+    }
+
+    if (strcmp("", current))
+    {
+        list[*size] = malloc(sizeof(char)*strlen(current)+1);
+        strncpy(list[*size], current, strlen(current)+1);
+        *size += 1;
+    }
+
+    for (size_t i = *size; i < cap; i++)
+        list[i] = NULL;
+    
+    return list;
+}
+
+char **splitBy(const char *input, char *item, size_t *size)
+{
+    *size = 0;
+    if (!input) return NULL;
+
+    char current[100] = "";
+    char **list = malloc(sizeof(char *)*8);
+    size_t cap = 8;
+    
+    size_t len = strlen(input);
+
+    for (int i = 0; i < len; i++)
+    {
+        char ch[2];
+        ch[1] = '\0';
+        ch[0] = input[i];
+        
+        if (!strcmp(item, ch))
+        {
+            if ((*size) + 1 >= cap) { list = realloc(list, sizeof(char *)*cap * 2); cap *= 2; }
+
+            list[*size] = malloc(sizeof(char)*strlen(current)+1);
+            strncpy(list[*size], current, strlen(current)+1);
+            *size += 1;
+            strcpy(current, "");
+            
+        } else strcat(current, ch);
+            
+    }
+
+    if (strcmp("", current))
+    {
+        list[*size] = malloc(sizeof(char)*strlen(current)+1);
+        strncpy(list[*size], current, strlen(current)+1);
+        *size += 1;
+    }
+
+    for (size_t i = *size; i < cap; i++)
+        list[i] = NULL;
+    
+    return list;
+}
+
 int StrStartsWith(char *str, char *pat, char **rem) // ?s
 {
     size_t strLen = strlen(str);
@@ -76,13 +185,27 @@ int StrStartsWith(char *str, char *pat, char **rem) // ?s
         if (str[offset] != pat[offset])
             return 0;
 
-    strncpy(*rem, (str+offset), strLen-(offset+2));
+    strncpy(*rem, (str+offset), strLen-(offset+1));
+    
     return 1;
 }
 
 int StrEndsWith(char *str, char *pat, char **rem) // s?
 {
-    return 0;
+    size_t strLen = strlen(str);
+    size_t patLen = strlen(pat);
+
+    if (patLen > strLen)
+        return 0;
+
+    int offset = strLen - patLen;
+    int idx = 0;
+    for (; offset < patLen; offset++)
+        if (str[offset] != pat[idx++])
+            return 0;
+
+    strncpy(*rem, str, (strLen-patLen)+1);
+    return 1;
 }
 
 int IsZero(char *input)
@@ -119,13 +242,22 @@ int IsNumber(char *input, long *num)
 
 int IsHex(char *input, long *num)
 {
-    if (!strcmp("0x0", input))
+    int inlen = strlen(input);
+    int remlen = inlen - 2;
+    char *rem = malloc(remlen+1);
+    rem[remlen] = '\0';
+    if (!(StrStartsWith(input, "0x", &rem)))
     {
+        free(rem);
+        return 0;
+    }
+    else if (IsZero(rem))
+    {
+        free(rem);
         *num = 0;
         return 1;
     }
-
-
+            
     errno = 0;
     char *end;
 
@@ -135,6 +267,7 @@ int IsHex(char *input, long *num)
         return 0;
     
     *num = res;
+    free(rem);
     return 1;
 }
 
