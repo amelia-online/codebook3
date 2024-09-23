@@ -34,16 +34,16 @@ Token *parse(const char *input, size_t *size)
         for (int j = 0; j < numTokens; j++)
         {
             col_pos += 1;
-            char *rem[100];
-            if (StrStartsWith(lineTokens[j], "//", &rem)) break;
-
+            char *rem = malloc(100);
+            if (StrStartsWith(lineTokens[j], "//", &rem)) { free(rem); break;}
+            free(rem);
             // Yeah I know this looks bad.
             long num;
             if (IsHex(lineTokens[j], &num))
             {
                 TokenValue val;
                 val.integer = num;
-                Token t = Token_New(Int, val, linenum, col_pos++);
+                Token t = Token_New(Number, val, linenum, col_pos++);
                 tokens[*size] = t;
                 *size += 1;
                 continue;
@@ -52,14 +52,14 @@ Token *parse(const char *input, size_t *size)
             {
                 TokenValue val;
                 val.integer = num;
-                Token t = Token_New(Int, val, linenum, col_pos++);
+                Token t = Token_New(Number, val, linenum, col_pos++);
                 tokens[*size] = t;
                 *size += 1;
                 continue;
             }
             
             Intrinsic intr;
-            if (MatchIntrinisc(lineTokens[j], &intr))
+            if (MatchIntrinsic(lineTokens[j], &intr))
             {
                 //...
                 continue;
@@ -383,11 +383,10 @@ void DS_Clear(DataStack *ds)
 }
 
 // Assume value has previously been malloced.
-KVPair KVP_New(const char *key, void *value, int isConst)
+KVPair KVP_New(const char *key, void *value)
 {
     return (KVPair)
     {
-        .isConst = isConst,
         .free = 0,
         .key = key,
         .value = value,
@@ -398,7 +397,6 @@ KVPair KVP_Default()
 {
     return (KVPair)
     {
-        .isConst = 0,
         .free = 1,
         .key = "",
         .value = NULL,
@@ -412,7 +410,7 @@ void KVP_Free(KVPair *kvp)
 
 int KVP_Equals(KVPair kvp1, KVPair kvp2)
 {
-    return kvp1.free == kvp2.free && kvp1.isConst == kvp2.isConst && kvp1.key == kvp2.key && kvp1.value == kvp2.value;
+    return kvp1.free == kvp2.free && kvp1.key == kvp2.key && kvp1.value == kvp2.value;
 }
 
 unsigned long hash(const char *key)
@@ -478,7 +476,7 @@ void VT_Put(VariableTableCB *vt, const char *key, void *value)
             index = 0;
     }
 
-     KVPair pair = KVP_New(key, value, 0);
+     KVPair pair = KVP_New(key, value);
     pair.free = 0;
     vt->table[index] = pair;
     vt->size++;

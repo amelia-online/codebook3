@@ -5,8 +5,11 @@ OBJS = token.o codebook.o
 forge: main.o token.o codebook.o
 	$(CC) $(CFLAGS) main.o $(OBJS) -o forge
 
-tests: tests.o codebook.o
-	$(CC) $(CFLAGS) tests.o codebook.o -o tests
+tests: tests.o codebook.o token.o
+	$(CC) $(CFLAGS) tests.o codebook.o token.o -o tests
+
+token.o: src/token.c headers/token.h
+	$(CC) $(CFLAGS) -c src/token.c
 
 tests.o: src/tests.c headers/cbtesting.h
 	$(CC) $(CFLAGS) -c src/tests.c

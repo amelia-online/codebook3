@@ -4,7 +4,6 @@
 #include "token.h"
 #include <stddef.h>
 
-void interp(Token *, size_t);
 Token *parse(const char *, size_t *);
 char **split(const char *, size_t *);
 char **splitln(char *, size_t *);
@@ -49,12 +48,11 @@ int DS_Over(DataStack *);
 typedef struct
 {
     const char *key;
-    int isConst;
     int free;
     void *value;
 } KVPair;
 
-KVPair KVP_New(const char *, void *, int);
+KVPair KVP_New(const char *, void *);
 KVPair KVP_Default();
 void KVP_Free(KVPair *);
 int KVP_Equals(KVPair, KVPair);
@@ -86,6 +84,8 @@ typedef struct
 EnvironmentCB Env_New();
 void Env_Free(EnvironmentCB *);
 void Env_DeclVar(const char *, void *);
+
+void interp(Token *, size_t, EnvironmentCB *);
 
 
 #endif // CODEBOOK_H

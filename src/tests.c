@@ -1,5 +1,6 @@
 #include "../headers/codebook.h"
 #include "../headers/cbtesting.h"
+#include "../headers/token.h"
 #include <stdbool.h>
 
 /*
@@ -7,6 +8,29 @@
 */
 
 // Misc.
+
+TEST (MatchIntrinsicSimple)
+{
+    Intrinsic out;
+
+    bool found = MatchIntrinsic("->Int", &out);
+
+    ASSERT (found);
+
+    ASSERT (out == CastPtr);
+
+    found = MatchIntrinsic("@", &out);
+
+    ASSERT (found);
+
+    ASSERT (out == Load);
+
+    found = MatchIntrinsic("dwef", &out);
+
+    ASSERT (!found);
+
+    PASS;
+}
 
 TEST (SplitlnSimple)
 {
@@ -321,7 +345,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 14
+#define TESTCOUNT 15
 
 int main()
 {
@@ -343,6 +367,8 @@ int main()
     RegisterTest(tests, &StrStartsWithSimple, "Simple StrStartsWith");
     RegisterTest(tests, &StrEndsWithSimple, "Simple StrEndsWith");
     RegisterTest(tests, &SplitlnSimple, "Simple Splitln");
+    RegisterTest(tests, &MatchIntrinsicSimple, "Simple MatchIntrinsic");
+
 
     for (int i = 0; i < TESTCOUNT; i++)
     {

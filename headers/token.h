@@ -58,7 +58,7 @@ typedef enum
     StringF,   // s,
 } Intrinsic;
 
-int MatchIntrinisc(char *, Intrinsic *);
+int MatchIntrinsic(char *, Intrinsic *);
 
 typedef enum 
 {
