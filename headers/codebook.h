@@ -9,6 +9,8 @@ char **split(const char *, size_t *);
 char **splitln(char *, size_t *);
 char **splitBy(const char *, char *, size_t *);
 
+void DoOp(Intrinsic, Environment *);
+
 int StrStartsWith(char *str, char *pat, char **rem);
 int StrEndsWith(char *, char *, char **);
 
@@ -21,6 +23,19 @@ typedef struct
     long val;
     DataType type;
 } Value;
+
+typedef struct
+{
+    enum state
+    {
+        Some = 0,
+        None,
+    } state;
+    void *value;
+} Optional;
+
+Optional optional(int, void *);
+void *unwrap(Optional);
 
 Value NewValue(DataType, long);
 
@@ -79,13 +94,13 @@ typedef struct
 {
     DataStack *numberStack;
     VariableTableCB *variables;
-} EnvironmentCB;
+} Environment;
 
-EnvironmentCB Env_New();
-void Env_Free(EnvironmentCB *);
+Environment Env_New();
+void Env_Free(Environment *);
 void Env_DeclVar(const char *, void *);
+Optional Env_PopTwo(Environment *);
 
-void interp(Token *, size_t, EnvironmentCB *);
-
+void interp(Token *, size_t, Environment *);
 
 #endif // CODEBOOK_H

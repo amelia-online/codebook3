@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <errno.h>
 
+#define MATCH(STR, PAT) if(!strcmp(STR, PAT))
+#define MATCHOP(OP) if (intr == OP)
+
 Token *parse(const char *input, size_t *size)
 {
     if (!strcmp("", input) || !input)
@@ -61,11 +64,18 @@ Token *parse(const char *input, size_t *size)
             Intrinsic intr;
             if (MatchIntrinsic(lineTokens[j], &intr))
             {
-                //...
+                TokenValue val;
+                val.intr = intr;
+                Token t = Token_New(Operator, val, linenum, col_pos++);
+                tokens[*size] = t;
+                *size += 1;
                 continue;
             }
 
-
+            MATCH (input, "const") 
+            {
+               // TODO...
+            }
 
         }
 
@@ -75,7 +85,7 @@ Token *parse(const char *input, size_t *size)
             free(lineTokens[idx]);
         free(lineTokens);
 
-        if (*size + 1 >= cap) { cap *= 2; tokens = realloc(tokens, sizeof(Token)*cap); }
+        if ((*size) + 1 >= cap) { cap *= 2; tokens = realloc(tokens, sizeof(Token)*cap); }
 
     }
 
@@ -84,6 +94,93 @@ Token *parse(const char *input, size_t *size)
     free(lines);
 
     return tokens;
+}
+/*
+typedef struct
+{
+    TokenType type;
+    TokenValue value;
+    unsigned int line;
+    unsigned int pos;
+} Token;
+*/
+void interp(Token *tokens, size_t size, Environment *env)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        Token t  = tokens[i];
+
+        if (t.type == Number)
+        {
+            DS_Push(env->numberStack, t.value.integer, Int);
+        }
+
+        if (t.type == Operator)
+        {
+            if (t.value.intr == Print)
+            {
+                Value num;
+                if (DS_Pop(env->numberStack, &num))
+                    printf("%ld", num.val);
+            }
+        }
+    }
+}
+
+void DoOp(Intrinsic intr, Environment *env)
+{
+    MATCHOP(Print)
+    {
+        Value v;
+        if (DS_Pop(env->numberStack, &v))
+        {
+            printf("%ld", v.val);
+        }
+        else
+        {
+
+        }
+    }
+
+    MATCHOP(PrintH)
+    {
+        Value v;
+        if (DS_Pop(env->numberStack, &v))
+        {
+            printf("0x%X", v.val);
+        }
+        else
+        {
+
+        }
+    }
+
+    MATCHOP(PrintC)
+    {
+        Value v;
+        if (DS_Pop(env->numberStack, &v))
+        {
+            printf("%c", v.val % 256);
+        }
+        else
+        {
+
+        }
+    }
+
+    MATCHOP(ReadS) // Ptr Int
+    {
+        
+    }
+
+    // ...
+
+    MATCHOP(Plus) // Int Int -> Int
+    {
+        
+    }
+
+
 }
 
 // mallocs list and list items, splits by spaces.
@@ -288,6 +385,8 @@ int IsHex(char *input, long *num)
 {
     int inlen = strlen(input);
     int remlen = inlen - 2;
+    if (remlen <= 0)
+        return 0;
     char *rem = malloc(remlen+1);
     rem[remlen] = '\0';
     if (!(StrStartsWith(input, "0x", &rem)))
@@ -551,17 +650,36 @@ void VT_Remove(VariableTableCB *vt, const char *key)
     vt->size--;
 }
 
-EnvironmentCB Env_New()
+Environment Env_New()
 {
-    return (EnvironmentCB)
+    Environment env =  (Environment)
     {
         .numberStack = malloc(sizeof(DataStack)),
         .variables = malloc(sizeof(VariableTableCB)),
     };
+    *(env.numberStack) = DS_New();
+    *(env.variables)   = VT_New();
+    return env;
 }
 
-void Env_Free(EnvironmentCB *env)
+void Env_Free(Environment *env)
 {
     free(env->numberStack);
     free( env->variables );
+}
+
+Optional optional(int state, void *ptr)
+{
+    return (Optional)
+    {
+        .value = ptr,
+        .state = state ? Some : None
+    };
+}
+
+void *unwrap(Optional opt)
+{
+    if (opt.state == Some)
+        return opt.value;
+    return NULL;
 }

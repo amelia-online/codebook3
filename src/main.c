@@ -28,8 +28,13 @@ int main(int argc, char **argv)
     char *string = file_to_string(file);
     fclose(file);
 
+    //size_t len;
+    //Token *tokens = parse(string, &len);
+
     size_t len;
-    Token *tokens = parse(string, &len);
+    Environment env = Env_New();
+    Token *tokens = parse("1 .", &len);
+    interp(tokens, len, &env);
 
     free(string);
 }

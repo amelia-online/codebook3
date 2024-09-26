@@ -4,6 +4,7 @@
 typedef enum
 {
     Number = 0,
+    Pointer,
     String,
     Ident,
     None,
@@ -23,6 +24,8 @@ typedef enum
     PrintS,    // .s
     PrintC,    // .c
     PrintH,    // .h
+    ReadS,     // ,s
+    ReadI,     // ,i
     Alloc,     // %
     Load,      // @
     Store,     // #
@@ -82,6 +85,7 @@ typedef enum
 typedef union
 {
     long integer;
+    Intrinsic intr;
     void *pointer;
 } TokenValue;
 

@@ -7,7 +7,28 @@
     Tests begin here.
 */
 
+TEST (SimpleInterp)
+{
+}
+
 // Misc.
+TEST (SimpleParse)
+{
+    size_t len;
+    Token *tokens = parse("1 2 +", &len);
+
+    ASSERT (len == 3);
+
+    ASSERT (tokens[0].value.integer == 1);
+
+    ASSERT (tokens[1].value.integer == 2);
+
+    ASSERT (tokens[2].value.intr == Plus);
+
+    free(tokens);
+
+    PASS;
+}
 
 TEST (MatchIntrinsicSimple)
 {
@@ -16,13 +37,11 @@ TEST (MatchIntrinsicSimple)
     bool found = MatchIntrinsic("->Int", &out);
 
     ASSERT (found);
-
-    ASSERT (out == CastPtr);
+    ASSERT (out == CastInt);
 
     found = MatchIntrinsic("@", &out);
 
     ASSERT (found);
-
     ASSERT (out == Load);
 
     found = MatchIntrinsic("dwef", &out);
@@ -345,7 +364,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 15
+#define TESTCOUNT 16
 
 int main()
 {
@@ -368,7 +387,7 @@ int main()
     RegisterTest(tests, &StrEndsWithSimple, "Simple StrEndsWith");
     RegisterTest(tests, &SplitlnSimple, "Simple Splitln");
     RegisterTest(tests, &MatchIntrinsicSimple, "Simple MatchIntrinsic");
-
+    RegisterTest(tests, &SimpleParse, "Simple Parse");
 
     for (int i = 0; i < TESTCOUNT; i++)
     {

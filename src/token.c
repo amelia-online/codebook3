@@ -1,7 +1,6 @@
 #include "../headers/token.h"
 #include <string.h>
 
-#define MATCH(IN, STR) if(!strcmp(IN, STR))
 #define MATCH_INTR(IN, STR, INTR, OUT) if (!strcmp(IN, STR)) \
 { \
     *OUT = INTR; \
@@ -97,5 +96,7 @@ int MatchIntrinsic(char *input, Intrinsic *out)
     MATCH_INTR(input, "s?", StringEW, out)
     MATCH_INTR(input, "s+", StringAdd, out)
     MATCH_INTR(input, "s,", StringF, out)
+    MATCH_INTR(input, ",s", ReadS, out)
+    MATCH_INTR(input, ",i", ReadI, out)
     return 0;
 }
