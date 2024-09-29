@@ -9,6 +9,7 @@
 
 #define MATCH(STR, PAT) if(!strcmp(STR, PAT))
 #define MATCHOP(OP) if (intr == OP)
+#define RANGE(START, END) for (int i = START; i < END; i++)
 
 Token *parse(const char *input, size_t *size)
 {
@@ -176,8 +177,7 @@ void DoOp(Intrinsic intr, Environment *env)
     // ...
 
     MATCHOP(Plus) // Int Int -> Int
-    {
-        
+    {   
     }
 
 
@@ -407,7 +407,10 @@ int IsHex(char *input, long *num)
     long res = strtol(input, &end, 16);
 
     if (errno == ERANGE || !res)
+    {
+        free(rem);
         return 0;
+    }
     
     *num = res;
     free(rem);
@@ -575,7 +578,7 @@ void VT_Put(VariableTableCB *vt, const char *key, void *value)
             index = 0;
     }
 
-     KVPair pair = KVP_New(key, value);
+    KVPair pair = KVP_New(key, value);
     pair.free = 0;
     vt->table[index] = pair;
     vt->size++;
@@ -666,20 +669,4 @@ void Env_Free(Environment *env)
 {
     free(env->numberStack);
     free( env->variables );
-}
-
-Optional optional(int state, void *ptr)
-{
-    return (Optional)
-    {
-        .value = ptr,
-        .state = state ? Some : None
-    };
-}
-
-void *unwrap(Optional opt)
-{
-    if (opt.state == Some)
-        return opt.value;
-    return NULL;
 }

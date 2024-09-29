@@ -7,10 +7,6 @@
     Tests begin here.
 */
 
-TEST (SimpleInterp)
-{
-}
-
 // Misc.
 TEST (SimpleParse)
 {

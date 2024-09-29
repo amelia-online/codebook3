@@ -16,6 +16,7 @@ typedef enum
     ConstDefn,
     Pop,
     Use,
+    MacroDefn
 } TokenType;
 
 typedef enum 
@@ -26,6 +27,7 @@ typedef enum
     PrintH,    // .h
     ReadS,     // ,s
     ReadI,     // ,i
+    ReadF,     // ,f
     Alloc,     // %
     Load,      // @
     Store,     // #
@@ -53,6 +55,7 @@ typedef enum
     Dup,       // dup
     CastInt,   // ->Int
     CastPtr,   // ->Ptr
+    CastFloat, // ->Float
     VarAccess, // ?
     StringEq,  // s=
     StringSW,  // ?s
@@ -74,17 +77,20 @@ typedef enum
     Else,
     Do,
     Times,
+    Macro
 } Keywords;
 
 typedef enum 
 {
     Int = 0,
     Ptr,
+    Float
 } DataType;
 
 typedef union
 {
     long integer;
+    double flt;
     Intrinsic intr;
     void *pointer;
 } TokenValue;

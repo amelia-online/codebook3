@@ -23,6 +23,9 @@ Token Token_New(TokenType type, TokenValue value, unsigned int line, unsigned in
     PrintS,    // .s
     PrintC,    // .c
     PrintH,    // .h
+    ReadS,     // ,s
+    ReadI,     // ,i
+    ReadF,     // ,f
     Alloc,     // %
     Load,      // @
     Store,     // #
@@ -50,6 +53,7 @@ Token Token_New(TokenType type, TokenValue value, unsigned int line, unsigned in
     Dup,       // dup
     CastInt,   // ->Int
     CastPtr,   // ->Ptr
+    CastFloat, // ->Float
     VarAccess, // ?
     StringEq,  // s=
     StringSW,  // ?s
@@ -63,6 +67,9 @@ int MatchIntrinsic(char *input, Intrinsic *out)
     MATCH_INTR(input, ".s", PrintS, out)
     MATCH_INTR(input, ".h", PrintH, out)
     MATCH_INTR(input, ".c", PrintC, out)
+    MATCH_INTR(input, ",s", ReadS, out)
+    MATCH_INTR(input, ",i", ReadI, out)
+    MATCH_INTR(input, ",f", ReadF, out)
     MATCH_INTR(input, "%", Alloc, out)
     MATCH_INTR(input, "@", Load, out)
     MATCH_INTR(input, "#", Store, out)
@@ -90,6 +97,7 @@ int MatchIntrinsic(char *input, Intrinsic *out)
     MATCH_INTR(input, "dup", Dup, out)
     MATCH_INTR(input, "->Int", CastInt, out)
     MATCH_INTR(input, "->Ptr", CastPtr, out)
+    MATCH_INTR(input, "->Float", CastFloat, out)
     MATCH_INTR(input, "?", VarAccess, out)
     MATCH_INTR(input, "s=", StringEq, out)
     MATCH_INTR(input, "?s", StringSW, out)

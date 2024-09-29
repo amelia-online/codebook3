@@ -1,0 +1,67 @@
+
+const TRUE  1 end
+const FALSE 0 end
+const NULLPTR 0x0 ->Ptr end
+
+~pow | Int Int -> Int {
+	pop a b :
+		$a
+		do $b 1 - times {
+			$a *
+		}	
+	end
+}	
+
+~factorial | Int -> Int {
+	pop n :
+		$n
+		do $n 1 - times {
+			dup 1 - 
+		}
+		do $n 1 - times { * }
+	end
+}
+
+~permutation | Int Int -> Int {
+	pop k n :
+		$n factorial! $n $k - factorial! divmod 
+		drop
+	end
+}
+
+~choose | Int -> Int {
+	pop k :
+		$k permutation! $k factorial! divmod 
+		drop
+	end
+}
+
+~max | Int Int -> Int {
+	// int int - int
+	pop a b :
+		$a $b < if $b else $a endif
+	end
+}
+
+~min | Int Int -> Int {
+	pop a b :
+		$a $b < if $a else $b endif
+	end
+}
+
+~srand | Int {
+	
+}
+
+~rand | -> Int {
+	// todo
+}
+
+~strlen | Ptr -> Int {
+	
+}
+
+~printn | Ptr Int {
+	// ptr int
+
+}
