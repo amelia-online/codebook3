@@ -11,10 +11,14 @@ char **splitBy(const char *, char *, size_t *);
 
 int StrStartsWith(char *str, char *pat, char **rem);
 int StrEndsWith(char *, char *, char **);
+int StrIncludes(char *, char *);
+int StrCount(char *, char *);
+char *Substr(char *, size_t, size_t);
 
 int IsZero(char *);
 int IsNumber(char *, long *);
 int IsHex(char *, long *);
+int IsFloat(char *, double *);
 
 typedef struct 
 {

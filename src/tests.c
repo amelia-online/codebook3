@@ -1,11 +1,67 @@
 #include "../headers/codebook.h"
 #include "../headers/cbtesting.h"
 #include "../headers/token.h"
+#include "../headers/lexer.h"
 #include <stdbool.h>
+
 
 /*
     Tests begin here.
 */
+TEST (BufferGet)
+{
+  char c;
+  Buffer buf = Buffer_Make("Lorum Ipsum");
+  bool res  = Buffer_Get(&buf, 4, &c);
+  ASSERT (c == 'm');
+  ASSERT (res);
+  PASS;
+}
+
+TEST (BufferPush)
+{
+  Buffer buf = Buffer_Make("Lorum");
+  Buffer_Push(&buf, " Ipsum");
+  ASSERT (!strcmp(buf.str, "Lorum Ipsum"));
+  PASS;
+}
+
+TEST (BufferTest)
+{
+  Buffer buf = Buffer_Make("Lorum Ipsum");
+  ASSERT (buf.size == 11);
+  ASSERT (buf.cap == 12);
+  PASS;
+}
+
+TEST (SimpleStrCount2)
+{
+    const char *str = "..,..,,,..,..";
+    int count = StrCount(str, ",,,");
+    ASSERT (count == 1);
+    PASS;
+}
+
+TEST (SimpleStrCount)
+{
+    const char *str = "..,..,,,..,..";
+    int count = StrCount(str, ",");
+    ASSERT (count == 5);
+}
+
+TEST (SimpleSubstr)
+{
+    const char *str = "This is a string";
+    char *sub = Substr(str, 4, 7);
+    int result = 0;
+
+    if (!strcmp(sub, " is"))
+        result = 1;
+
+    free(sub);
+    
+    return result;
+}
 
 // Misc.
 TEST (SimpleParse)
@@ -93,7 +149,7 @@ TEST (StrStartsWithSimple)
 
     ASSERT (res);
 
-    ASSERT (strcmp(rem, "world!"));
+    ASSERT (!strcmp(rem, "world!"));
 
     PASS;
 }
@@ -360,7 +416,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 16
+#define TESTCOUNT 22
 
 int main()
 {
@@ -384,6 +440,13 @@ int main()
     RegisterTest(tests, &SplitlnSimple, "Simple Splitln");
     RegisterTest(tests, &MatchIntrinsicSimple, "Simple MatchIntrinsic");
     RegisterTest(tests, &SimpleParse, "Simple Parse");
+    RegisterTest(tests, &SimpleSubstr, "Simple Substr");
+    RegisterTest(tests, &SimpleStrCount, "Simple StrCount 1");
+    RegisterTest(tests, &SimpleStrCount2, "Simple StrCount 2");
+    RegisterTest(tests, &BufferTest, "Buffer Test");
+    RegisterTest(tests, &BufferPush, "Buffer Push Simple");
+    RegisterTest(tests, &BufferGet, "Buffer Get Simple");
+
 
     for (int i = 0; i < TESTCOUNT; i++)
     {

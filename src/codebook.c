@@ -1,5 +1,6 @@
 #include "../headers/codebook.h"
 #include "../headers/token.h"
+#include "../headers/lexer.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -13,6 +14,8 @@
 
 Token *parse(const char *input, size_t *size)
 {
+  // Lexer *lexer = Lexer_New(input);
+  
     if (!strcmp("", input) || !input)
     {
         *size = 0;
@@ -42,6 +45,13 @@ Token *parse(const char *input, size_t *size)
             if (StrStartsWith(lineTokens[j], "//", &rem)) { free(rem); break;}
             free(rem);
             // Yeah I know this looks bad.
+
+			double fl;
+			if (IsFloat(lineTokens[j], &fl))
+			{
+			  
+			}
+	    
             long num;
             if (IsHex(lineTokens[j], &num))
             {
@@ -93,7 +103,7 @@ Token *parse(const char *input, size_t *size)
     for (int i = 0; i < numlines; i++)
         free(lines[i]);
     free(lines);
-
+    // free(lexer);
     return tokens;
 }
 /*
@@ -118,23 +128,21 @@ void interp(Token *tokens, size_t size, Environment *env)
 
         if (t.type == Operator)
         {
-            if (t.value.intr == Print)
-            {
-                Value num;
-                if (DS_Pop(env->numberStack, &num))
-                    printf("%ld", num.val);
-            }
+            DoOp(t.value.intr, env);
+            continue;
         }
     }
 }
 
 void DoOp(Intrinsic intr, Environment *env)
 {
-    MATCHOP(Print)
+    MATCHOP(Print) // .
     {
         Value v;
         if (DS_Pop(env->numberStack, &v))
         {
+            if (v.type)
+
             printf("%ld", v.val);
         }
         else
@@ -143,7 +151,7 @@ void DoOp(Intrinsic intr, Environment *env)
         }
     }
 
-    MATCHOP(PrintH)
+    MATCHOP(PrintH) // .h
     {
         Value v;
         if (DS_Pop(env->numberStack, &v))
@@ -156,7 +164,7 @@ void DoOp(Intrinsic intr, Environment *env)
         }
     }
 
-    MATCHOP(PrintC)
+    MATCHOP(PrintC) // .c
     {
         Value v;
         if (DS_Pop(env->numberStack, &v))
@@ -326,7 +334,7 @@ int StrStartsWith(char *str, char *pat, char **rem) // ?s
         if (str[offset] != pat[offset])
             return 0;
 
-    strncpy(*rem, (str+offset), strLen-(offset+1));
+    *rem = Substr(str, offset, strLen);
     
     return 1;
 }
@@ -349,6 +357,60 @@ int StrEndsWith(char *str, char *pat, char **rem) // s?
     return 1;
 }
 
+// Includes start, does not include end.
+char *Substr(char *str, size_t start, size_t end) // s_
+{
+    size_t len = end - start;
+    if (len <= 0 || len > strlen(str))
+        return NULL;
+
+    char *res = malloc(len+1);
+    strncpy(res, str+start, len);
+    res[len] = '\0';
+    return res;
+}
+
+int StrIncludes(char *str, char *pat) // s_?
+{
+    size_t patlen = strlen(pat);
+    size_t strLen = strlen(str);
+
+    if (patlen > strLen)
+        return 0;
+    else if (patlen == strLen)
+    {
+        if (!strcmp(str, pat))
+            return 1;
+        return 0;
+    }
+
+    int found = 0;
+    for (int i = 0; i + patlen < strLen; i++)
+    {
+        char *slice = Substr(str, i, i + patlen);
+        if (!strcmp(slice, pat))
+            found = 1;
+        free(slice);
+    }
+
+    return found;
+}
+
+int StrCount(char *str, char *pat)
+{
+    size_t len = strlen(str);
+    size_t plen = strlen(pat);
+    int count = 0;
+    for (int i = 0; i + plen < len; i++)
+    {
+        char *slice = Substr(str, i, i + plen);
+        if (!strcmp(slice, pat))
+            count += 1;
+        free(slice);
+    }
+    return count;
+}
+
 int IsZero(char *input)
 {
     size_t len = strlen(input);
@@ -357,6 +419,35 @@ int IsZero(char *input)
         if (input[i] != '0')
             return 0;
     return 1;
+}
+
+int IsFloat(char *input, double *num)
+{
+    if (!StrIncludes(input, ".") || StrCount(input, ".") > 1)
+        return 0;
+
+    size_t len;
+    char **parts = splitBy(input, ".", &len);
+
+    int isZero = 0;
+    
+
+    RANGE(0, len)
+        free(parts[i]);
+    free(parts);
+
+    errno = 0;
+    char *end;
+
+    double res = strtod(input, &end);
+
+    if (!(errno == ERANGE || !res))
+    {
+        *num = res;
+        return 1;
+    }
+
+    return 0;
 }
 
 int IsNumber(char *input, long *num)

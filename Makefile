@@ -1,12 +1,12 @@
 CFLAGS = -fsanitize=undefined -fsanitize=address -g
 CC = gcc
-OBJS = token.o codebook.o
+OBJS = token.o codebook.o lexer.o
 
 forge: main.o token.o codebook.o
 	$(CC) $(CFLAGS) main.o $(OBJS) -o forge
 
-tests: tests.o codebook.o token.o
-	$(CC) $(CFLAGS) tests.o codebook.o token.o -o tests
+tests: tests.o codebook.o token.o lexer.o
+	$(CC) $(CFLAGS) tests.o codebook.o token.o lexer.o -o tests
 
 token.o: src/token.c headers/token.h
 	$(CC) $(CFLAGS) -c src/token.c
@@ -17,8 +17,8 @@ tests.o: src/tests.c headers/cbtesting.h
 main.o: src/main.c token.o
 	$(CC) $(CFLAGS) -c src/main.c
 
-token.o: src/token.c headers/token.h
-	$(CC) $(CFLAGS) -c src/token.c
+lexer.o: src/lexer.c headers/lexer.h
+	$(CC) $(CFLAGS) -c src/lexer.c
 
 codebook.o: src/codebook.c headers/codebook.h
 	$(CC) $(CFLAGS) -c src/codebook.c
