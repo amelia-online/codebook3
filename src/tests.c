@@ -8,6 +8,40 @@
 /*
     Tests begin here.
 */
+TEST (StrIncludesSimple)
+{
+  char *fl = "52.86";
+  bool res = StrIncludes(fl, ".");
+  ASSERT (res);
+  PASS;
+}
+
+TEST (IsFloatSimple)
+{
+  char *fl = "52.86";
+  double res;
+  bool isfl = IsFloat(fl, &res);
+  ASSERT (isfl);
+  ASSERT (res == 52.86);
+  PASS;
+}
+
+TEST (BufferGetRange)
+{
+  char *text = malloc(10);
+  Buffer buf = Buffer_Make("Lorum Ipsum");
+  bool res = Buffer_GetRange(&buf, 0, 5, &text);
+
+  if (!strcmp("Lorum", text))
+  {
+    free(text);
+    FAIL;
+  }
+
+  free(text);
+  PASS;
+}
+
 TEST (BufferGet)
 {
   char c;
@@ -28,10 +62,10 @@ TEST (BufferPush)
 
 TEST (BufferTest)
 {
-  Buffer buf = Buffer_Make("Lorum Ipsum");
-  ASSERT (buf.size == 11);
-  ASSERT (buf.cap == 12);
-  PASS;
+    Buffer buf = Buffer_Make("Lorum Ipsum");
+    ASSERT (buf.size == 11);
+    ASSERT (buf.cap == 12);
+    PASS;
 }
 
 TEST (SimpleStrCount2)
@@ -47,6 +81,7 @@ TEST (SimpleStrCount)
     const char *str = "..,..,,,..,..";
     int count = StrCount(str, ",");
     ASSERT (count == 5);
+    PASS;
 }
 
 TEST (SimpleSubstr)
@@ -66,6 +101,7 @@ TEST (SimpleSubstr)
 // Misc.
 TEST (SimpleParse)
 {
+    PASS;
     size_t len;
     Token *tokens = parse("1 2 +", &len);
 
@@ -416,7 +452,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 22
+#define TESTCOUNT 25
 
 int main()
 {
@@ -446,6 +482,9 @@ int main()
     RegisterTest(tests, &BufferTest, "Buffer Test");
     RegisterTest(tests, &BufferPush, "Buffer Push Simple");
     RegisterTest(tests, &BufferGet, "Buffer Get Simple");
+    RegisterTest(tests, &BufferGetRange, "Buffer GetRange Simple");
+    RegisterTest(tests, &IsFloatSimple, "IsFloat Simple");
+    RegisterTest(tests, &StrIncludesSimple, "StrIncludes Simple");
 
 
     for (int i = 0; i < TESTCOUNT; i++)

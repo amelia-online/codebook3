@@ -18,16 +18,17 @@ bool Buffer_Get(const Buffer *, size_t, char *);
 bool Buffer_GetRange(const Buffer *, size_t, size_t, char **);
 
 typedef struct {
-    Buffer buf;
-    size_t line;
-    size_t col;
+  Buffer buf;
+  size_t line;
+  size_t col;
+  size_t pos;
+  size_t numlines;
 } Lexer;
 
 Lexer *Lexer_New(char *);
 Lexer Lexer_Make(char *);
 bool Lexer_HasNext(const Lexer *);
 bool Lexer_HasNextLine(const Lexer *);
-bool Lexer_HasNextChar(const Lexer *);
 char *Lexer_Next(Lexer *);
 char Lexer_ChopLeft(Lexer *);
 char Lexer_ChopRight(Lexer *);

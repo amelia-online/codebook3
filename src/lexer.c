@@ -80,10 +80,56 @@ Lexer *Lexer_New(char *text)
 
 Lexer Lexer_Make(char *text)
 {
+  size_t numlines = 0;
+  
+  Buffer buf = Buffer_Make(text);
+  for (size_t i = 0; i < buf.size; i++)
+    if (buf.str[i] == '\n')
+      numlines++;
+  
   return (Lexer)
   {
-    .buf = Buffer_Make(text),
+    .buf = buf,
     .line = 1,
-    .col = 1
+    .col = 1,
+    .pos = 0,
+    .numlines = numlines,
   };
 }
+
+bool Lexer_HasNext(const Lexer *lex)
+{
+  return lex->pos < lex->buf.size;
+}
+
+bool Lexer_HasNextLine(const Lexer *lex)
+{
+  return lex->line < lex->numlines;
+}
+
+char *Lexer_Next(Lexer *lex)
+{
+  // TODO: ...
+}
+
+char *Lexer_NextLine(Lexer *lex)
+{
+
+}
+
+char Lexer_ChopLeft(Lexer *lex)
+{
+
+}
+
+char Lexer_ChopRight(Lexer *lex)
+{
+
+}
+
+void Lexer_SkipLine(Lexer *lex)
+{
+
+}
+
+

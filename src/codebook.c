@@ -14,7 +14,24 @@
 
 Token *parse(const char *input, size_t *size)
 {
-  // Lexer *lexer = Lexer_New(input);
+  Lexer *lexer = Lexer_New(input);
+  Token *tokens = malloc(sizeof(Token)*8);
+  *size = 0;
+  
+  while (Lexer_HasNext(lexer))
+  {
+    
+  }
+
+  
+  free(lexer);
+  return tokens;
+}
+
+/*
+Token *parse(const char *input, size_t *size)
+{
+    Lexer *lexer = Lexer_New(input);
   
     if (!strcmp("", input) || !input)
     {
@@ -103,9 +120,12 @@ Token *parse(const char *input, size_t *size)
     for (int i = 0; i < numlines; i++)
         free(lines[i]);
     free(lines);
-    // free(lexer);
+    free(lexer);
     return tokens;
 }
+
+*/
+
 /*
 typedef struct
 {
@@ -333,8 +353,8 @@ int StrStartsWith(char *str, char *pat, char **rem) // ?s
     for (; offset < patLen; offset++)
         if (str[offset] != pat[offset])
             return 0;
-
-    *rem = Substr(str, offset, strLen);
+    if (rem)
+      *rem = Substr(str, offset, strLen);
     
     return 1;
 }
@@ -352,8 +372,8 @@ int StrEndsWith(char *str, char *pat, char **rem) // s?
     for (; offset < patLen; offset++)
         if (str[offset] != pat[idx++])
             return 0;
-
-    strncpy(*rem, str, (strLen-patLen)+1);
+    if (rem)
+      strncpy(*rem, str, (strLen-patLen)+1);
     return 1;
 }
 
@@ -429,12 +449,21 @@ int IsFloat(char *input, double *num)
     size_t len;
     char **parts = splitBy(input, ".", &len);
 
-    int isZero = 0;
-    
+    int isZero = 1;
 
     RANGE(0, len)
-        free(parts[i]);
+    {
+      if (!IsZero(parts[i]))
+	isZero = 0;
+      free(parts[i]);
+    }
     free(parts);
+
+    if (isZero)
+    {
+      *num = 0.0;
+      return 1;
+    }
 
     errno = 0;
     char *end;

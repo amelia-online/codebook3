@@ -11,7 +11,7 @@
 #define TestFnPtr(T) int (*T)(void *)
 #define TEST(T) int T(void *params)
 #define SETUP srand(time(NULL)); \
-     printf("Running tests...\n"); \
+     printf("Running tests...\n");				\
      printf("================================================\n");
 #define END printf("================================================\n"); \
     DisposeAll(); \
