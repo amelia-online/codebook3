@@ -8,6 +8,20 @@
 /*
     Tests begin here.
 */
+TEST (LexerNew)
+{
+  Lexer l = Lexer_Make("Line One\nLine Two\n");
+
+  if (l.numlines != 2)
+  {
+    Lexer_Free(&l);
+    FAIL;
+  }
+
+  Lexer_Free(&l);
+  PASS;
+}
+
 TEST (StrIncludesSimple)
 {
   char *fl = "52.86";
@@ -452,7 +466,7 @@ TEST (VariableTableKeys)
     Tests end here.
 */
 
-#define TESTCOUNT 25
+#define TESTCOUNT 26
 
 int main()
 {
@@ -485,6 +499,7 @@ int main()
     RegisterTest(tests, &BufferGetRange, "Buffer GetRange Simple");
     RegisterTest(tests, &IsFloatSimple, "IsFloat Simple");
     RegisterTest(tests, &StrIncludesSimple, "StrIncludes Simple");
+    RegisterTest(tests, &LexerNew, "Lexer New Test");
 
 
     for (int i = 0; i < TESTCOUNT; i++)

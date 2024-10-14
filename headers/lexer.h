@@ -16,6 +16,7 @@ void Buffer_Clear(Buffer *);
 void Buffer_Push(Buffer *, const char *);
 bool Buffer_Get(const Buffer *, size_t, char *);
 bool Buffer_GetRange(const Buffer *, size_t, size_t, char **);
+void Buffer_Free(Buffer *);
 
 typedef struct {
   Buffer buf;
@@ -34,6 +35,6 @@ char Lexer_ChopLeft(Lexer *);
 char Lexer_ChopRight(Lexer *);
 void Lexer_SkipLine(Lexer *);
 char *Lexer_NextLine(Lexer *);
-
+void Lexer_Free(Lexer *);
 
 #endif // LEXER_H

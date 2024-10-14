@@ -11,6 +11,9 @@
 #define MATCH(STR, PAT) if(!strcmp(STR, PAT))
 #define MATCHOP(OP) if (intr == OP)
 #define RANGE(START, END) for (int i = START; i < END; i++)
+#define TOKEN(TYPE, VAL) Token t = Token_New(TYPE, val, lexer->line, lexer->col); \
+  tokens[*size] = t;							\
+  *size += 1;
 
 Token *parse(const char *input, size_t *size)
 {
@@ -20,6 +23,56 @@ Token *parse(const char *input, size_t *size)
   
   while (Lexer_HasNext(lexer))
   {
+    char *line = Lexer_NextLine(lexer);
+    if (StrStartsWith(line, "//", NULL))
+    {
+      Lexer_SkipLine(lexer);
+      continue;
+    }
+
+    size_t len;
+    char **array = split(line, &len);
+
+    // Forgive me.
+    RANGE(0, len)
+    {
+      double d;
+      long l;
+      Intrinsic intr;
+      if (IsFloat(array[i], &d))
+      {
+	TokenValue val;
+	val.flt = d;
+	TOKEN(Number, val)
+	continue;
+      }
+      else if (IsHex(array[i], &l))
+      {
+	TokenValue val;
+	val.integer = l;
+	TOKEN(Number, val)
+	continue;
+      }
+      else if (IsNumber(array[i], &l))
+      {
+	TokenValue val;
+	val.integer = l;
+	TOKEN(Number, val)
+	continue;
+      }
+      else if (MatchIntrinsic(array[i], &intr))
+      {
+	TokenValue val;
+	val.intr = intr;
+	TOKEN(Operator, val)
+	continue;
+      }      
+    }
+
+    RANGE(0, len)
+      free(array[i]);
+    free(array);
+    free(line);
     
   }
 
@@ -161,14 +214,15 @@ void DoOp(Intrinsic intr, Environment *env)
         Value v;
         if (DS_Pop(env->numberStack, &v))
         {
-            if (v.type)
-
+	  //if (v.type)
             printf("%ld", v.val);
+	    todo("Print: Implement type checking.");
         }
         else
         {
-
+	  todo("Print: Implement error");
         }
+	return;
     }
 
     MATCHOP(PrintH) // .h
@@ -205,7 +259,20 @@ void DoOp(Intrinsic intr, Environment *env)
     // ...
 
     MATCHOP(Plus) // Int Int -> Int
-    {   
+    {
+      if (BadStackCount(env->numberStack, 2))
+      {
+	
+      }
+      
+      Value rhs, lhs;
+      if (DS_Pop(env->numberStack, &rhs) && DS_Pop(env->numberStack, &lhs))
+	DS_Push(env->numberStack, lhs.val + rhs.val, Int);
+    }
+
+    MATCHOP(Mult)
+    {
+      
     }
 
 
@@ -339,6 +406,38 @@ char **splitBy(const char *input, char *item, size_t *size)
         list[i] = NULL;
     
     return list;
+}
+
+// Returns 0 if str, pat, or index is NULL, or if the pattern is not
+// in the string.
+// Returns 1 if the pattern is in the string, and sets index
+// to where the pattern starts.
+int StrFind(char *str, char *pat, size_t *index)
+{
+  if (!str || !pat || !index)
+    return 0;
+
+  size_t patlen = strlen(pat);
+  size_t strLen = strlen(str);
+  
+  if (strlen(str) < strlen(pat))
+    return 0;
+
+  int found = 0;
+  for (int i = 0; i + patlen < strLen; i++)
+  {
+    char *slice = Substr(str, i, i + patlen);
+    if (!strcmp(slice, pat))
+    {
+       found = 1;
+       *index = i;
+       free(slice);
+       break;
+    }
+    free(slice);
+  }
+
+  return found;
 }
 
 int StrStartsWith(char *str, char *pat, char **rem) // ?s
@@ -789,4 +888,15 @@ void Env_Free(Environment *env)
 {
     free(env->numberStack);
     free( env->variables );
+}
+
+void todo(const char *msg)
+{
+  printf("[TODO]: %s\n", msg);
+  exit(0);
+}
+
+int BadStackCount(const DataStack *stack, int argc)
+{
+  return stack->size < argc;
 }

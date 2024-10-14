@@ -14,6 +14,7 @@ int StrEndsWith(char *, char *, char **);
 int StrIncludes(char *, char *);
 int StrCount(char *, char *);
 char *Substr(char *, size_t, size_t);
+int StrFind(char *, char *, size_t *);
 
 int IsZero(char *);
 int IsNumber(char *, long *);
@@ -92,5 +93,9 @@ void Env_Free(Environment *);
 void Env_DeclVar(const char *, void *);
 
 void interp(Token *, size_t, Environment *);
+void todo(const char *);
+
+int BadStackCount(const DataStack *, int);
+
 
 #endif // CODEBOOK_H

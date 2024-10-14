@@ -6,7 +6,6 @@ Buffer Buffer_Make(char *text)
 {
   char *buf = malloc(strlen(text)+1);
   strcpy(buf, text);
-    // buf[strlen(text)] = '\0';
   return (Buffer)
   {
     .str = buf,
@@ -47,9 +46,10 @@ void Buffer_Push(Buffer *buf, const char *text)
     BufferGrow(buf);
 
   strcpy(buf->str+buf->size, text);
+  buf->size = newsize;
 }
 
-// Text is assumed to be previously malloc'd/
+// Text is assumed to be previously malloc'd
 bool Buffer_GetRange(const Buffer *buf, size_t start, size_t end, char **text)
 {
   if (!buf || start < 0 || start >= buf->size || end >= buf->size || start > end
@@ -71,6 +71,11 @@ bool Buffer_Get(const Buffer *buf, size_t index, char *text)
   return true;
 }
 
+void Buffer_Free(Buffer *buf)
+{
+  free(buf->str);
+}
+
 Lexer *Lexer_New(char *text)
 {
   Lexer *res = malloc(sizeof(Lexer));
@@ -80,11 +85,11 @@ Lexer *Lexer_New(char *text)
 
 Lexer Lexer_Make(char *text)
 {
-  size_t numlines = 0;
+  size_t numlines = 1;
   
   Buffer buf = Buffer_Make(text);
   for (size_t i = 0; i < buf.size; i++)
-    if (buf.str[i] == '\n')
+    if (buf.str[i] == '\n' && i != buf.size-1)
       numlines++;
   
   return (Lexer)
@@ -130,6 +135,11 @@ char Lexer_ChopRight(Lexer *lex)
 void Lexer_SkipLine(Lexer *lex)
 {
 
+}
+
+void Lexer_Free(Lexer *lexer)
+{
+  Buffer_Free(&lexer->buf);
 }
 
 
